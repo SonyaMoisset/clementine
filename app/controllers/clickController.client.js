@@ -1,33 +1,57 @@
 'use strict';
 
-(function () {
+(function() {
+  var addButton = document.querySelector('.btn-add');
+  var deleteButton = document.querySelector('.btn-delete');
+  var clickNbr = document.querySelector('#click-nbr');
+  var apiUrl = 'http://localhost:3000/api/clicks';
 
-angular
-   .module('clementineApp', ['ngResource'])
-   .controller('clickController',
-      ['$scope', '$resource', function ($scope, $resource) {
+function ready (fn) {
+    if (typeof fn !== 'function') {
+       return;
+    }
 
-         var Click = $resource('/api/clicks');
+    if (document.readyState === 'complete') {
+       return fn();
+    }
 
-         $scope.getClicks = function () {
-            Click.get(function (results) {
-               $scope.clicks = results.clicks;
-            });
-         };
+    document.addEventListener('DOMContentLoaded', fn, false);
+ }
 
-         $scope.getClicks();
+function ajaxRequest (method, url, callback) {
+   var xmlhttp = new XMLHttpRequest();
 
-        $scope.addClick = function () {
-           Click.save(function () {
-              $scope.getClicks();
-           });
-        };
+   xmlhttp.onreadystatechange = function () {
+      if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+         callback(xmlhttp.response);
+      }
+   };
 
-        $scope.resetClicks = function () {
-           Click.remove(function () {
-              $scope.getClicks();
-           });
-        };
-   }]);
+   xmlhttp.open(method, url, true);
+   xmlhttp.send();
+}
+
+function updateClickCount (data) {
+  var clicksObject = JSON.parse(data);
+  clickNbr.innerHTML = clicksObject.clicks;
+}
+
+ready(ajaxRequest('GET', apiUrl, updateClickCount));
+
+addButton.addEventListener('click', function () {
+
+    ajaxRequest('POST', apiUrl, function () {
+       ajaxRequest('GET', apiUrl, updateClickCount)
+    });
+
+ }, false);
+
+deleteButton.addEventListener('click', function () {
+
+   ajaxRequest('DELETE', apiUrl, function () {
+      ajaxRequest('GET', apiUrl, updateClickCount);
+   });
+
+}, false);
 
 })();
