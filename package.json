@@ -1,0 +1,16 @@
+{
+  "name": "clementine",
+  "version": "1.0.0",
+  "description": "MEAN Stack Application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Sonya Moisset",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "mongodb": "^2.1.16"
+  }
+}
