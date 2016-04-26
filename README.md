@@ -1,1 +1,1 @@
-# Clementinejs
+# Clementinejs MEAN Stack App
